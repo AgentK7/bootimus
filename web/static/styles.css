@@ -377,6 +377,10 @@ th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--bor
 .col-dot { text-align: center; width: 1%; }
 .col-logo { text-align: center; width: 1%; padding-right: 0; }
 .col-check { text-align: center; width: 1%; padding: 0 4px; }
+tr.row-uploading { background: rgba(255, 176, 0, 0.04); }
+tr.row-uploading:hover { background: rgba(255, 176, 0, 0.08); }
+tr.row-upload-error { background: rgba(239, 68, 68, 0.05); }
+tr.row-upload-error:hover { background: rgba(239, 68, 68, 0.10); }
 .col-check input[type="checkbox"] { cursor: pointer; vertical-align: middle; margin: 0; }
 
 .api-section { margin-bottom: 22px; }
@@ -400,16 +404,16 @@ th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--bor
 
 .get-iso-distro { margin-bottom: 18px; }
 .get-iso-distro h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-secondary); margin: 14px 0 6px; font-weight: 600; }
-.get-iso-row { display: grid; grid-template-columns: minmax(200px, 1.2fr) 160px 2fr auto; gap: 10px; align-items: center; padding: 6px 4px; border-bottom: 1px solid var(--border); }
+.get-iso-row { display: grid; grid-template-columns: minmax(180px, 1.2fr) 160px 2fr 220px; gap: 10px; align-items: center; padding: 6px 4px; border-bottom: 1px solid var(--border); }
 .get-iso-row:last-child { border-bottom: none; }
 .get-iso-label { font-size: 13px; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.get-iso-mirror-sel, .get-iso-url { padding: 0 8px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-input); color: var(--text-primary); font-size: 12px; }
-.get-iso-url { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11px; }
-.get-iso-actions { display: flex; align-items: center; justify-content: flex-end; min-width: 180px; }
-.get-iso-progress { display: flex; align-items: center; gap: 8px; width: 100%; }
-.get-iso-bar { flex: 1; height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden; }
+.get-iso-mirror-sel, .get-iso-url { padding: 0 8px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-input); color: var(--text-primary); font-size: 12px; box-sizing: border-box; min-width: 0; }
+.get-iso-url { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11px; width: 100%; }
+.get-iso-actions { display: flex; align-items: center; justify-content: flex-end; width: 220px; min-width: 0; }
+.get-iso-progress { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; }
+.get-iso-bar { flex: 1; height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden; min-width: 60px; }
 .get-iso-bar-fill { height: 100%; background: var(--success); border-radius: 3px; transition: width 0.2s ease; }
-.get-iso-status-text { font-size: 11px; color: var(--text-secondary); white-space: nowrap; min-width: 90px; text-align: right; }
+.get-iso-status-text { font-size: 11px; color: var(--text-secondary); white-space: nowrap; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
 .distro-logo { display: block; margin: 0 auto; object-fit: contain; }
 .distro-logo-modal { width: 32px; height: 32px; object-fit: contain; vertical-align: middle; margin-right: 10px; }
 th {

@@ -13,16 +13,16 @@ import (
 )
 
 type MenuBuilder struct {
-	images           []models.Image
-	groups           []*models.ImageGroup
-	theme            *models.MenuTheme
-	macAddress       string
-	serverAddr       string
-	httpPort         int
-	groupStack       []uint
-	enabledTools     []tools.EnabledTool
-	nextBootImageID  uint
-	profileManager   *profiles.Manager
+	images          []models.Image
+	groups          []*models.ImageGroup
+	theme           *models.MenuTheme
+	macAddress      string
+	serverAddr      string
+	httpPort        int
+	groupStack      []uint
+	enabledTools    []tools.EnabledTool
+	nextBootImageID uint
+	profileManager  *profiles.Manager
 }
 
 func (s *Server) generateIPXEMenuWithGroups(images []models.Image, macAddress string, nextBootImageID ...uint) string {

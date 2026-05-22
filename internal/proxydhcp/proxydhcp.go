@@ -6,7 +6,6 @@ import (
 	"net"
 	"strconv"
 	"sync"
-	"syscall"
 
 	"bootimus/internal/metrics"
 
@@ -171,20 +170,6 @@ func pxeVendorOptions() []byte {
 		0x06, 0x01, 0x08,
 		0xff,
 	}
-}
-
-func enableBroadcast(conn *net.UDPConn) error {
-	raw, err := conn.SyscallConn()
-	if err != nil {
-		return err
-	}
-	var setErr error
-	if err := raw.Control(func(fd uintptr) {
-		setErr = syscall.SetsockoptInt(int(fd), syscall.SOL_SOCKET, syscall.SO_BROADCAST, 1)
-	}); err != nil {
-		return err
-	}
-	return setErr
 }
 
 func (s *Server) bootfileFor(req *dhcpv4.DHCPv4) string {

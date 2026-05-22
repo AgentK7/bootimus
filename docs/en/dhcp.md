@@ -343,6 +343,7 @@ add code=93 name=match-uefi-9 option-set=set-uefi server=<DHCP_SERVER_NAME> valu
 # 4. Apply to DHCP Network
 /ip dhcp-server network
 set [find address="<YOUR_SUBNET>"] boot-file-name="" next-server=<BOOT_SERVER_IP>
+```
 
 ## Ubiquiti EdgeRouter
 
@@ -600,7 +601,6 @@ sudo nmap --script broadcast-dhcp-discover
 -  Configure [Image Management](images.md) to add ISOs
 -  Set up [Admin Console](admin.md) for management
 -  Configure [Client Management](clients.md) for access control
--  Review [Security Guide](security.md) for hardening
 
 
 ## Pi-hole (dnsmasq)
@@ -648,3 +648,4 @@ dhcp-boot=tag:efi-x64-alt,ipxe.efi,,<BOOT_SERVER_IP>
 pxe-service=tag:bios,x86PC,"Network Boot BIOS",undionly.kpxe,<BOOT_SERVER_IP>
 pxe-service=tag:efi-x64,x86-64_EFI,"Network Boot UEFI",ipxe.efi,<BOOT_SERVER_IP>
 pxe-service=tag:efi-x64-alt,x86-64_EFI,"Network Boot UEFI (Alt)",ipxe.efi,<BOOT_SERVER_IP>
+```

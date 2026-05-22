@@ -3,21 +3,23 @@ import de from './de';
 import fr from './fr';
 import es from './es';
 import ru from './ru';
+import zhCN from './zh-CN';
 
-export type Locale = 'en' | 'de' | 'fr' | 'es' | 'ru';
+export type Locale = 'en' | 'de' | 'fr' | 'es' | 'ru' | 'zh-CN';
 
 export const defaultLocale: Locale = 'en';
-export const locales: Locale[] = ['en', 'de', 'fr', 'es', 'ru'];
+export const locales: Locale[] = ['en', 'de', 'fr', 'es', 'ru', 'zh-CN'];
 
 export const localeMeta: Record<Locale, { label: string; native: string; flag: string; ready: boolean }> = {
   en: { label: 'English', native: 'English (UK)', flag: 'EN', ready: true },
   de: { label: 'German',  native: 'Deutsch',      flag: 'DE', ready: true },
   fr: { label: 'French',  native: 'Français',     flag: 'FR', ready: true },
   es: { label: 'Spanish', native: 'Español',      flag: 'ES', ready: true },
-  ru: { label: 'Russian', native: 'Русский',      flag: 'RU', ready: false },
+  ru: { label: 'Russian', native: 'Русский',      flag: 'RU', ready: true },
+  'zh-CN': { label: 'Chinese (Simplified)', native: '简体中文', flag: 'ZH', ready: true },
 };
 
-const dictionaries = { en, de, fr, es, ru };
+const dictionaries = { en, de, fr, es, ru, 'zh-CN': zhCN };
 
 type Dict = typeof en;
 type Path<T> = T extends object

@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { defaultLocale, type Locale } from '../i18n';
+import { defaultLocale, locales, type Locale } from '../i18n';
 
 export interface DocLookup {
   entry: CollectionEntry<'docs'>;
@@ -40,7 +40,7 @@ export function localeFromId(id: string): Locale | null {
   const i = id.indexOf('/');
   if (i < 0) return null;
   const l = id.slice(0, i) as Locale;
-  return ['en', 'de', 'fr', 'es', 'ru'].includes(l) ? l : null;
+  return (locales as string[]).includes(l) ? l : null;
 }
 
 export function docUrl(locale: Locale, slug?: string): string {

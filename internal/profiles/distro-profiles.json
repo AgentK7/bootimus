@@ -1,5 +1,5 @@
 {
-  "version": "0.1.68",
+  "version": "0.1.70",
   "profiles": [
     {
       "id": "ubuntu",
@@ -35,13 +35,12 @@
       "auto_install_type": "",
       "boot_method": "kernel",
       "mirrors": [
-        {"region": "Global (kernel.org)", "base": "https://mirrors.edge.kernel.org/linuxmint"},
-        {"region": "AU (AARNet)", "base": "https://mirror.aarnet.edu.au/pub/linuxmint"}
+        {"region": "UK (Universiry of Kent Mirrorservice)", "base": "https://mirrorservice.org/sites/www.linuxmint.com/pub/linuxmint.com"}
       ],
       "releases": [
-        {"label": "22.1 Cinnamon (64-bit)", "path": "/stable/22.1/linuxmint-22.1-cinnamon-64bit.iso"},
-        {"label": "22.1 MATE (64-bit)", "path": "/stable/22.1/linuxmint-22.1-mate-64bit.iso"},
-        {"label": "22.1 XFCE (64-bit)", "path": "/stable/22.1/linuxmint-22.1-xfce-64bit.iso"}
+        {"label": "22.3 Cinnamon (64-bit)", "path": "/stable/22.1/linuxmint-22.3-cinnamon-64bit.iso"},
+        {"label": "22.3 MATE (64-bit)", "path": "/stable/22.1/linuxmint-22.3-mate-64bit.iso"},
+        {"label": "22.3 XFCE (64-bit)", "path": "/stable/22.1/linuxmint-22.3-xfce-64bit.iso"}
       ]
     },
     {
@@ -77,6 +76,18 @@
       "initrd_paths": ["/casper/initrd", "/casper/initrd.lz", "/casper/initrd.gz"],
       "squashfs_paths": ["/casper/filesystem.squashfs"],
       "default_boot_params": "boot=casper initrd=initrd ds=nocloud ip=dhcp iso-url={{BASE_URL}}/isos/{{FILENAME}}",
+      "auto_install_type": "",
+      "boot_method": "kernel"
+    },
+    {
+      "id": "raspbian",
+      "display_name": "Raspberry Pi OS",
+      "family": "debian",
+      "filename_patterns": ["raspbian", "raspberry-pi-os", "raspberrypi-os", "rpi-os"],
+      "kernel_paths": ["/boot/vmlinuz", "/boot/kernel.img"],
+      "initrd_paths": ["/boot/initrd.img"],
+      "squashfs_paths": [],
+      "default_boot_params": "",
       "auto_install_type": "",
       "boot_method": "kernel"
     },
@@ -192,10 +203,51 @@
       ]
     },
     {
-      "id": "centos",
-      "display_name": "CentOS / Rocky / Alma",
+      "id": "alma",
+      "display_name": "AlmaLinux",
       "family": "redhat",
-      "filename_patterns": ["centos", "rocky", "alma", "eurolinux", "springdale", "oracle", "oraclelinux", "scientificlinux"],
+      "filename_patterns": ["alma", "almalinux"],
+      "kernel_paths": ["/images/pxeboot/vmlinuz"],
+      "initrd_paths": ["/images/pxeboot/initrd.img"],
+      "squashfs_paths": ["/LiveOS/squashfs.img"],
+      "default_boot_params": "initrd=initrd root=live:{{BASE_URL}}/isos/{{FILENAME}} rd.live.image inst.repo={{BASE_URL}}/boot/{{CACHE_DIR}}/iso/ inst.stage2={{BASE_URL}}/boot/{{CACHE_DIR}}/iso/ rd.neednet=1",
+      "auto_install_type": "kickstart",
+      "boot_method": "kernel",
+      "mirrors": [
+        {"region": "Global (Official)", "base": "https://repo.almalinux.org/almalinux"},
+        {"region": "DE (Hetzner)", "base": "https://mirror.hetzner.com/almalinux"}
+      ],
+      "releases": [
+        {"label": "9 DVD (x86_64)", "path": "/9/isos/x86_64/AlmaLinux-9-latest-x86_64-dvd.iso"},
+        {"label": "9 Boot (x86_64)", "path": "/9/isos/x86_64/AlmaLinux-9-latest-x86_64-boot.iso"}
+      ]
+    },
+    {
+      "id": "rocky",
+      "display_name": "Rocky Linux",
+      "family": "redhat",
+      "filename_patterns": ["rocky", "rockylinux"],
+      "kernel_paths": ["/images/pxeboot/vmlinuz"],
+      "initrd_paths": ["/images/pxeboot/initrd.img"],
+      "squashfs_paths": ["/LiveOS/squashfs.img"],
+      "default_boot_params": "initrd=initrd root=live:{{BASE_URL}}/isos/{{FILENAME}} rd.live.image inst.repo={{BASE_URL}}/boot/{{CACHE_DIR}}/iso/ inst.stage2={{BASE_URL}}/boot/{{CACHE_DIR}}/iso/ rd.neednet=1",
+      "auto_install_type": "kickstart",
+      "boot_method": "kernel",
+      "mirrors": [
+        {"region": "Global (Official)", "base": "https://download.rockylinux.org/pub/rocky"},
+        {"region": "DE (Hetzner)", "base": "https://mirror.hetzner.com/rocky"}
+      ],
+      "releases": [
+        {"label": "9 DVD (x86_64)", "path": "/9/isos/x86_64/Rocky-9-latest-x86_64-dvd.iso"},
+        {"label": "9 Minimal (x86_64)", "path": "/9/isos/x86_64/Rocky-9-latest-x86_64-minimal.iso"},
+        {"label": "9 Boot (x86_64)", "path": "/9/isos/x86_64/Rocky-9-latest-x86_64-boot.iso"}
+      ]
+    },
+    {
+      "id": "centos",
+      "display_name": "CentOS",
+      "family": "redhat",
+      "filename_patterns": ["centos", "centos-stream", "eurolinux", "springdale", "oracle", "oraclelinux", "scientificlinux"],
       "kernel_paths": ["/images/pxeboot/vmlinuz"],
       "initrd_paths": ["/images/pxeboot/initrd.img"],
       "squashfs_paths": ["/LiveOS/squashfs.img"],
@@ -302,6 +354,42 @@
       "filename_patterns": ["freebsd"],
       "kernel_paths": ["/boot/kernel/kernel"],
       "initrd_paths": ["/boot/mfsroot.gz"],
+      "squashfs_paths": [],
+      "default_boot_params": "vfs.root.mountfrom=cd9660:/dev/md0 kernelname=/boot/kernel/kernel",
+      "auto_install_type": "",
+      "boot_method": "kernel"
+    },
+    {
+      "id": "netbsd",
+      "display_name": "NetBSD",
+      "family": "bsd",
+      "filename_patterns": ["netbsd"],
+      "kernel_paths": ["/netbsd"],
+      "initrd_paths": [],
+      "squashfs_paths": [],
+      "default_boot_params": "",
+      "auto_install_type": "",
+      "boot_method": "kernel"
+    },
+    {
+      "id": "openbsd",
+      "display_name": "OpenBSD",
+      "family": "bsd",
+      "filename_patterns": ["openbsd"],
+      "kernel_paths": ["/bsd", "/bsd.rd"],
+      "initrd_paths": [],
+      "squashfs_paths": [],
+      "default_boot_params": "",
+      "auto_install_type": "",
+      "boot_method": "kernel"
+    },
+    {
+      "id": "dragonflybsd",
+      "display_name": "DragonFly BSD",
+      "family": "bsd",
+      "filename_patterns": ["dragonflybsd", "dragonfly-bsd", "dragonfly"],
+      "kernel_paths": ["/boot/kernel/kernel"],
+      "initrd_paths": [],
       "squashfs_paths": [],
       "default_boot_params": "vfs.root.mountfrom=cd9660:/dev/md0 kernelname=/boot/kernel/kernel",
       "auto_install_type": "",

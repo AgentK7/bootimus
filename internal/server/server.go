@@ -25,13 +25,13 @@ import (
 	"bootimus/bootloaders"
 	"bootimus/internal/admin"
 	"bootimus/internal/auth"
+	"bootimus/internal/autoinstall"
 	"bootimus/internal/metrics"
 	"bootimus/internal/models"
 	"bootimus/internal/nbd"
 	"bootimus/internal/profiles"
 	"bootimus/internal/proxydhcp"
 	"bootimus/internal/redfish"
-	"bootimus/internal/autoinstall"
 	"bootimus/internal/scheduler"
 	"bootimus/internal/smb"
 	"bootimus/internal/storage"
@@ -71,20 +71,21 @@ func panicRecoveryMiddleware(next http.Handler) http.Handler {
 }
 
 type Config struct {
-	TFTPPort          int
-	TFTPSinglePort    bool
-	HTTPPort          int
-	AdminPort         int
-	BootDir           string
-	DataDir           string
-	ISODir            string
-	ServerAddr        string
-	Storage           storage.Storage
-	Auth              *auth.Manager
-	NBDEnabled        bool
-	NBDPort           int
-	WOLBroadcastAddr  string
-	ProfileManager    *profiles.Manager
+	TFTPPort         int
+	TFTPSinglePort   bool
+	TFTPBlockSize    int
+	HTTPPort         int
+	AdminPort        int
+	BootDir          string
+	DataDir          string
+	ISODir           string
+	ServerAddr       string
+	Storage          storage.Storage
+	Auth             *auth.Manager
+	NBDEnabled       bool
+	NBDPort          int
+	WOLBroadcastAddr string
+	ProfileManager   *profiles.Manager
 
 	ProxyDHCPEnabled      bool
 	ProxyDHCPBootfileBIOS string
@@ -96,18 +97,18 @@ type Config struct {
 }
 
 type Server struct {
-	config             *Config
-	httpServer         *http.Server
-	adminServer        *http.Server
-	tftpServer         *tftp.Server
-	proxyDHCPServer    *proxydhcp.Server
-	webhookNotifier    *webhook.Notifier
-	scheduler          *scheduler.Scheduler
-	bootLogDedup       map[string]time.Time
-	bootLogDedupMu     sync.Mutex
-	wg                 sync.WaitGroup
-	activeSessions     *ActiveSessions
-	logBroadcaster     *LogBroadcaster
+	config                *Config
+	httpServer            *http.Server
+	adminServer           *http.Server
+	tftpServer            *tftp.Server
+	proxyDHCPServer       *proxydhcp.Server
+	webhookNotifier       *webhook.Notifier
+	scheduler             *scheduler.Scheduler
+	bootLogDedup          map[string]time.Time
+	bootLogDedupMu        sync.Mutex
+	wg                    sync.WaitGroup
+	activeSessions        *ActiveSessions
+	logBroadcaster        *LogBroadcaster
 	activeBootloaderSet   string // name of active set folder, empty = built-in
 	activeBootloaderSetMu sync.RWMutex
 	toolsManager          *tools.Manager
@@ -814,6 +815,12 @@ goto dhcp
 	)
 
 	server.SetTimeout(5 * time.Second)
+	blockSize := s.config.TFTPBlockSize
+	if blockSize <= 0 {
+		blockSize = 1456
+	}
+	server.SetBlockSize(blockSize)
+	log.Printf("TFTP block size: %d bytes (clients may negotiate up to this via blksize option)", blockSize)
 	server.SetHook(tftpDebugHook{})
 	if s.config.TFTPSinglePort {
 		log.Print("Enabling single port mode for TFTP server")

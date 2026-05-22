@@ -137,7 +137,7 @@ func SanitizeShareName(isoBase string) string {
 	return result
 }
 
-func (m *Manager) smbDir() string    { return filepath.Join(m.dataDir, "smb") }
+func (m *Manager) smbDir() string     { return filepath.Join(m.dataDir, "smb") }
 func (m *Manager) configPath() string { return filepath.Join(m.smbDir(), "smb.conf") }
 
 func (m *Manager) ensureStateDirs() error {

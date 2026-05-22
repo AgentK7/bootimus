@@ -522,4 +522,3 @@ curl -u admin:password -X POST http://localhost:8081/api/scan
 -  Read [Image Management Guide](images.md) for ISO handling
 -  See [Admin Console Guide](admin.md) for management
 -  Configure [DHCP Server](dhcp.md) for PXE booting
--  Review [Security Guide](security.md) for hardening

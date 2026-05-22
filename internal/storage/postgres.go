@@ -208,7 +208,6 @@ func (s *PostgresStore) Close() error {
 	return nil
 }
 
-
 func (s *PostgresStore) ListClients() ([]*models.Client, error) {
 	var clients []*models.Client
 	if err := s.db.Preload("Images").Find(&clients).Error; err != nil {
@@ -239,7 +238,6 @@ func (s *PostgresStore) UpdateClient(mac string, client *models.Client) error {
 func (s *PostgresStore) DeleteClient(mac string) error {
 	return s.db.Where("mac_address = ?", mac).Delete(&models.Client{}).Error
 }
-
 
 func (s *PostgresStore) ListImages() ([]*models.Image, error) {
 	var images []*models.Image
@@ -373,7 +371,6 @@ func (s *PostgresStore) resolveGroupPath(groupPath string, cache map[string]*uin
 
 	return parentID, nil
 }
-
 
 func (s *PostgresStore) AssignImagesToClient(mac string, imageFilenames []string) error {
 	var client models.Client
@@ -540,7 +537,6 @@ func (s *PostgresStore) UpdateUser(username string, user *models.User) error {
 func (s *PostgresStore) DeleteUser(username string) error {
 	return s.db.Where("username = ?", username).Delete(&models.User{}).Error
 }
-
 
 func (s *PostgresStore) ListCustomFiles() ([]*models.CustomFile, error) {
 	var files []*models.CustomFile
@@ -709,7 +705,6 @@ func (s *PostgresStore) ListImagesByGroup(groupID uint) ([]*models.Image, error)
 	return images, nil
 }
 
-
 func (s *PostgresStore) LogBootAttempt(macAddress, imageName, ipAddress string, success bool, errorMsg string) error {
 	bootLog := models.BootLog{
 		MACAddress: macAddress,
@@ -774,7 +769,6 @@ func (s *PostgresStore) GetBootLogsByMAC(macAddress string, limit int) ([]models
 	}
 	return logs, nil
 }
-
 
 func (s *PostgresStore) SaveHardwareInventory(inv *models.HardwareInventory) error {
 	if inv.MACAddress != "" {

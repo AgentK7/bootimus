@@ -152,6 +152,7 @@ const collapsedClientGroups = (() => {
     } catch (_) { return new Set(); }
 })();
 let extractionProgress = {}; // Track extraction progress by filename
+const pendingUploads = new Map();
 
 // Theme
 function toggleTheme() {
@@ -2029,6 +2030,60 @@ function distroLogoHTML(distro, size) {
     return `<img src="${src}" width="${sz}" height="${sz}" class="distro-logo" alt="${alt}" onerror="this.onerror=null; this.src='${DISTRO_LOGO_FALLBACK}'">`;
 }
 
+function uploadRowHTML(u, includeGroupCell) {
+    const groupCell = includeGroupCell ? '<td></td>' : '';
+    const fnSafe = escapeHtml(u.filename);
+    const errCls = u.error ? ' row-upload-error' : '';
+    const statusText = u.error ? ('✗ ' + u.error) : (u.status || (u.progress.toFixed(1) + '%'));
+    const dismissBtn = u.error
+        ? `<button class="btn btn-sm" onclick="dismissPendingUpload('${escapeHtml(u.filename)}')" title="Dismiss">×</button>`
+        : '';
+    return `
+                    <tr class="row-uploading${errCls}" data-upload="${fnSafe}">
+                        <td class="col-check"></td>
+                        <td class="col-logo">${distroLogoHTML('')}</td>
+                        <td>${escapeHtml(u.name)} <span class="badge badge-info">Uploading</span></td>
+                        <td><code>${fnSafe}</code></td>
+                        <td>${formatBytes(u.size)}</td>
+                        <td><span style="color: var(--text-secondary);">-</span></td>${groupCell}
+                        <td class="col-dot"></td>
+                        <td class="col-dot"></td>
+                        <td><span style="color: var(--text-secondary);">-</span></td>
+                        <td class="operations-cell">
+                            <div class="progress-container" style="display: flex; align-items: center; gap: 8px;">
+                                <div class="progress-bar" style="flex: 1; height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+                                    <div class="progress-fill" style="width: ${u.progress}%; height: 100%; background: ${u.error ? 'var(--danger)' : 'var(--success)'}; transition: width 0.2s;"></div>
+                                </div>
+                                <span class="progress-text" style="font-size: 11px; color: var(--text-secondary); white-space: nowrap;">${escapeHtml(statusText)}</span>
+                                ${dismissBtn}
+                            </div>
+                        </td>
+                    </tr>`;
+}
+
+function updateUploadRowDOM(filename) {
+    const u = pendingUploads.get(filename);
+    if (!u) return;
+    const row = document.querySelector(`tr[data-upload="${CSS.escape(filename)}"]`);
+    if (!row) {
+        renderImagesTable();
+        return;
+    }
+    const fill = row.querySelector('.progress-fill');
+    const text = row.querySelector('.progress-text');
+    if (fill) {
+        fill.style.width = u.progress + '%';
+        fill.style.background = u.error ? 'var(--danger)' : 'var(--success)';
+    }
+    if (text) text.textContent = u.error ? ('✗ ' + u.error) : (u.status || (u.progress.toFixed(1) + '%'));
+    if (u.error) row.classList.add('row-upload-error');
+}
+
+function dismissPendingUpload(filename) {
+    pendingUploads.delete(filename);
+    renderImagesTable();
+}
+
 function imageRowHTML(img, includeGroupCell, depth = 0) {
     const groupCell = includeGroupCell ? `
                         <td>
@@ -2097,7 +2152,7 @@ function imageRowHTML(img, includeGroupCell, depth = 0) {
 function renderImagesTable() {
     const container = document.getElementById('images-table');
 
-    if (images.length === 0) {
+    if (images.length === 0 && pendingUploads.size === 0) {
         container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px;">No images yet. Upload or scan for ISOs.</p>';
         return;
     }
@@ -2208,11 +2263,19 @@ function renderImagesTable() {
         bodyHtml = out;
     }
 
+    let uploadHtml = '';
+    if (pendingUploads.size > 0) {
+        const includeGroupCell = !imageGroupedView;
+        for (const u of pendingUploads.values()) {
+            uploadHtml += uploadRowHTML(u, includeGroupCell);
+        }
+    }
+
     container.innerHTML = `
         <div class="table-scroll">
         <table>
             <thead>${theadHtml}</thead>
-            <tbody>${bodyHtml}</tbody>
+            <tbody>${uploadHtml}${bodyHtml}</tbody>
         </table>
         </div>
     `;
@@ -3631,7 +3694,7 @@ function setupUpload() {
         }
     });
 
-    document.getElementById('upload-form').addEventListener('submit', async (e) => {
+    document.getElementById('upload-form').addEventListener('submit', (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
@@ -3642,84 +3705,80 @@ function setupUpload() {
             return;
         }
 
-        // Show progress indicator
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Uploading...';
-
-        // Add progress message
-        const progressMsg = document.createElement('div');
-        progressMsg.className = 'alert alert-info';
-        progressMsg.id = 'upload-progress';
-        progressMsg.innerHTML = `
-            <div>Uploading ${file.name} (${formatBytes(file.size)})</div>
-            <div style="margin-top: 10px;">
-                <div style="background: var(--bg-primary); height: 20px; border-radius: 10px; overflow: hidden;">
-                    <div id="progress-bar" style="background: #38bdf8; height: 100%; width: 0%; transition: width 0.3s;"></div>
-                </div>
-                <div id="progress-text" style="margin-top: 5px; text-align: center;">Starting upload...</div>
-            </div>
-        `;
-        e.target.insertBefore(progressMsg, submitBtn);
-
-        try {
-            const xhr = new XMLHttpRequest();
-
-            // Track upload progress
-            xhr.upload.addEventListener('progress', (event) => {
-                if (event.lengthComputable) {
-                    const percentComplete = (event.loaded / event.total) * 100;
-                    const progressBar = document.getElementById('progress-bar');
-                    const progressText = document.getElementById('progress-text');
-                    if (progressBar && progressText) {
-                        progressBar.style.width = percentComplete + '%';
-                        progressText.textContent = `${Math.round(percentComplete)}% - ${formatBytes(event.loaded)} / ${formatBytes(event.total)}`;
-                    }
-                }
-            });
-
-            // Handle completion
-            const uploadPromise = new Promise((resolve, reject) => {
-                xhr.addEventListener('load', () => {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        resolve(JSON.parse(xhr.responseText));
-                    } else {
-                        reject(new Error(`Upload failed with status ${xhr.status}`));
-                    }
-                });
-                xhr.addEventListener('error', () => reject(new Error('Upload failed')));
-                xhr.addEventListener('abort', () => reject(new Error('Upload cancelled')));
-            });
-
-            xhr.open('POST', `${API_BASE}/images/upload`);
-            const token = getToken();
-            if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-            xhr.send(formData);
-
-            const data = await uploadPromise;
-
-            if (data.success) {
-                showAlert('Image uploaded successfully', 'success');
-                closeModal('upload-modal');
-                loadImages();
-                loadStats();
-                e.target.reset();
-                fileNameDisplay.textContent = '';
-            } else {
-                showAlert(data.error || 'Upload failed', 'error');
-            }
-        } catch (err) {
-            showAlert('Failed to upload image: ' + err.message, 'error');
-        } finally {
-            // Clean up progress UI
-            const progress = document.getElementById('upload-progress');
-            if (progress) {
-                progress.remove();
-            }
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalBtnText;
+        const filename = file.name;
+        if (pendingUploads.has(filename)) {
+            showAlert('That file is already being uploaded', 'error');
+            return;
         }
+        pendingUploads.set(filename, {
+            filename,
+            name: filename.replace(/\.iso$/i, ''),
+            size: file.size,
+            progress: 0,
+            status: 'Starting…',
+            error: null,
+        });
+
+        closeModal('upload-modal');
+        e.target.reset();
+        fileNameDisplay.textContent = '';
+        renderImagesTable();
+
+        const xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener('progress', (event) => {
+            if (!event.lengthComputable) return;
+            const op = pendingUploads.get(filename);
+            if (!op) return;
+            op.progress = (event.loaded / event.total) * 100;
+            op.status = `${op.progress.toFixed(1)}% · ${formatBytes(event.loaded)}/${formatBytes(event.total)}`;
+            updateUploadRowDOM(filename);
+        });
+        xhr.addEventListener('load', () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                let data;
+                try { data = JSON.parse(xhr.responseText); } catch (_) { data = { success: false, error: 'Invalid server response' }; }
+                if (data.success) {
+                    pendingUploads.delete(filename);
+                    showAlert(`Uploaded: ${filename}`, 'success');
+                    loadImages();
+                    loadStats();
+                } else {
+                    const op = pendingUploads.get(filename);
+                    if (op) {
+                        op.error = data.error || 'Upload failed';
+                        updateUploadRowDOM(filename);
+                    }
+                    showAlert(data.error || 'Upload failed', 'error');
+                }
+            } else {
+                const op = pendingUploads.get(filename);
+                if (op) {
+                    op.error = `HTTP ${xhr.status}`;
+                    updateUploadRowDOM(filename);
+                }
+                showAlert(`Upload failed: HTTP ${xhr.status}`, 'error');
+            }
+        });
+        xhr.addEventListener('error', () => {
+            const op = pendingUploads.get(filename);
+            if (op) {
+                op.error = 'Network error';
+                updateUploadRowDOM(filename);
+            }
+            showAlert('Upload failed: network error', 'error');
+        });
+        xhr.addEventListener('abort', () => {
+            const op = pendingUploads.get(filename);
+            if (op) {
+                op.error = 'Cancelled';
+                updateUploadRowDOM(filename);
+            }
+        });
+
+        xhr.open('POST', `${API_BASE}/images/upload`);
+        const token = getToken();
+        if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        xhr.send(formData);
     });
 }
 
@@ -4279,11 +4338,26 @@ function startGetISOProgressPolling(rowKey, filename, distroName, releaseLabel) 
     const existing = getISOActiveDownloads.get(rowKey);
     if (existing) clearInterval(existing);
 
+    const stop = () => {
+        const id = getISOActiveDownloads.get(rowKey);
+        if (id) clearInterval(id);
+        getISOActiveDownloads.delete(rowKey);
+    };
     const tick = async () => {
         try {
             const res = await authFetch(`${API_BASE}/downloads/progress?filename=${encodeURIComponent(filename)}`);
+            if (res.status === 404) {
+                stop();
+                renderGetISOError(rowKey, 'Download record disappeared (likely failed before tracking started)', distroName, releaseLabel);
+                return;
+            }
             const data = await res.json();
-            if (data.success && data.data) {
+            if (!data.success) {
+                stop();
+                renderGetISOError(rowKey, data.error || 'Progress unavailable', distroName, releaseLabel);
+                return;
+            }
+            if (data.data) {
                 const p = data.data;
                 const pct = (p.percentage || 0).toFixed(1);
                 const fill = document.getElementById('get-iso-bar-fill-' + rowKey);
@@ -4292,17 +4366,18 @@ function startGetISOProgressPolling(rowKey, filename, distroName, releaseLabel) 
                 if (status) status.textContent = `${pct}% · ${p.speed || ''}`;
 
                 if (p.status === 'completed') {
-                    clearInterval(getISOActiveDownloads.get(rowKey));
-                    getISOActiveDownloads.delete(rowKey);
+                    stop();
                     renderGetISOComplete(rowKey, distroName, releaseLabel);
                     loadImages();
                 } else if (p.status === 'error') {
-                    clearInterval(getISOActiveDownloads.get(rowKey));
-                    getISOActiveDownloads.delete(rowKey);
+                    stop();
                     renderGetISOError(rowKey, p.error || 'Download failed', distroName, releaseLabel);
                 }
             }
-        } catch (_) {}
+        } catch (e) {
+            stop();
+            renderGetISOError(rowKey, 'Lost connection to server', distroName, releaseLabel);
+        }
     };
     tick();
     const intervalId = setInterval(tick, 1000);

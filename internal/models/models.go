@@ -37,13 +37,13 @@ func (s *StringSlice) Scan(value interface{}) error {
 }
 
 type User struct {
-	ID        uint      `gorm:"primarykey" json:"id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Username  string    `gorm:"uniqueIndex;not null" json:"username"`
-	Password  string    `gorm:"not null" json:"-"`
-	Enabled   bool      `gorm:"default:true" json:"enabled"`
-	IsAdmin   bool      `gorm:"default:false" json:"is_admin"`
+	ID        uint       `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	Username  string     `gorm:"uniqueIndex;not null" json:"username"`
+	Password  string     `gorm:"not null" json:"-"`
+	Enabled   bool       `gorm:"default:true" json:"enabled"`
+	IsAdmin   bool       `gorm:"default:false" json:"is_admin"`
 	LastLogin *time.Time `json:"last_login,omitempty"`
 }
 
@@ -91,21 +91,21 @@ type Client struct {
 }
 
 type ScheduledTask struct {
-	ID             uint           `gorm:"primarykey" json:"id"`
-	CreatedAt      time.Time      `json:"created_at"`
-	UpdatedAt      time.Time      `json:"updated_at"`
-	DeletedAt      gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
-	Name           string         `gorm:"not null" json:"name"`
-	Enabled        bool           `gorm:"default:true" json:"enabled"`
-	CronExpr       string         `gorm:"not null" json:"cron_expr"`
-	ClientGroupID  uint           `gorm:"not null;index" json:"client_group_id"`
-	ClientGroup    *ClientGroup   `gorm:"foreignKey:ClientGroupID" json:"client_group,omitempty"`
-	ActionType     string         `gorm:"not null" json:"action_type"`
-	ActionParam    string         `json:"action_param,omitempty"`
-	LastRun        *time.Time     `json:"last_run,omitempty"`
-	LastStatus     string         `json:"last_status,omitempty"`
-	LastError      string         `json:"last_error,omitempty"`
-	RunCount       int            `gorm:"default:0" json:"run_count"`
+	ID            uint           `gorm:"primarykey" json:"id"`
+	CreatedAt     time.Time      `json:"created_at"`
+	UpdatedAt     time.Time      `json:"updated_at"`
+	DeletedAt     gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	Name          string         `gorm:"not null" json:"name"`
+	Enabled       bool           `gorm:"default:true" json:"enabled"`
+	CronExpr      string         `gorm:"not null" json:"cron_expr"`
+	ClientGroupID uint           `gorm:"not null;index" json:"client_group_id"`
+	ClientGroup   *ClientGroup   `gorm:"foreignKey:ClientGroupID" json:"client_group,omitempty"`
+	ActionType    string         `gorm:"not null" json:"action_type"`
+	ActionParam   string         `json:"action_param,omitempty"`
+	LastRun       *time.Time     `json:"last_run,omitempty"`
+	LastStatus    string         `json:"last_status,omitempty"`
+	LastError     string         `json:"last_error,omitempty"`
+	RunCount      int            `gorm:"default:0" json:"run_count"`
 }
 
 type WebhookConfig struct {
@@ -161,59 +161,59 @@ type ImageGroup struct {
 }
 
 type Image struct {
-	ID          uint           `gorm:"primarykey" json:"id"`
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
-	Name        string         `gorm:"not null" json:"name"`
-	Filename    string         `gorm:"uniqueIndex;not null" json:"filename"`
-	Description string         `json:"description"`
-	Size        int64          `json:"size"`
-	Enabled     bool           `gorm:"default:true" json:"enabled"`
-	Public      bool           `gorm:"default:false" json:"public"`
-	BootCount   int            `gorm:"default:0" json:"boot_count"`
-	LastBooted  *time.Time     `json:"last_booted,omitempty"`
-	Clients     []Client       `gorm:"many2many:client_images;" json:"clients,omitempty"`
-	GroupID     *uint          `gorm:"index" json:"group_id,omitempty"`
-	Group       *ImageGroup    `gorm:"foreignKey:GroupID" json:"group,omitempty"`
-	Order       int            `gorm:"default:0" json:"order"`
-	Extracted         bool       `gorm:"default:false" json:"extracted"`
-	Distro            string     `json:"distro,omitempty"`
-	BootMethod        string     `gorm:"default:sanboot" json:"boot_method"`
-	KernelPath        string     `json:"kernel_path,omitempty"`
-	InitrdPath        string     `json:"initrd_path,omitempty"`
-	BootParams        string     `json:"boot_params,omitempty"`
-	SquashfsPath      string     `json:"squashfs_path,omitempty"`
-	ExtractionError   string     `json:"extraction_error,omitempty"`
-	ExtractedAt       *time.Time `json:"extracted_at,omitempty"`
-	SanbootCompatible bool       `gorm:"default:true" json:"sanboot_compatible"`
-	SanbootHint       string     `json:"sanboot_hint,omitempty"`
-	NetbootRequired   bool       `gorm:"default:false" json:"netboot_required"`
-	NetbootAvailable  bool       `gorm:"default:false" json:"netboot_available"`
-	NetbootURL        string     `json:"netboot_url,omitempty"`
-	AutoInstallScript     string `gorm:"type:text" json:"auto_install_script,omitempty"`
-	AutoInstallEnabled    bool   `gorm:"default:false" json:"auto_install_enabled"`
-	AutoInstallScriptType string `json:"auto_install_script_type,omitempty"`
-	InstallWimPath        string `json:"install_wim_path,omitempty"`
-	SMBInstallEnabled     bool   `gorm:"default:false" json:"smb_install_enabled"`
-	SMBPatchFingerprint   string `json:"smb_patch_fingerprint,omitempty"`
-	SMBNeedsRepatch       bool   `gorm:"-" json:"smb_needs_repatch"`
+	ID                    uint           `gorm:"primarykey" json:"id"`
+	CreatedAt             time.Time      `json:"created_at"`
+	UpdatedAt             time.Time      `json:"updated_at"`
+	DeletedAt             gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	Name                  string         `gorm:"not null" json:"name"`
+	Filename              string         `gorm:"uniqueIndex;not null" json:"filename"`
+	Description           string         `json:"description"`
+	Size                  int64          `json:"size"`
+	Enabled               bool           `gorm:"default:true" json:"enabled"`
+	Public                bool           `gorm:"default:false" json:"public"`
+	BootCount             int            `gorm:"default:0" json:"boot_count"`
+	LastBooted            *time.Time     `json:"last_booted,omitempty"`
+	Clients               []Client       `gorm:"many2many:client_images;" json:"clients,omitempty"`
+	GroupID               *uint          `gorm:"index" json:"group_id,omitempty"`
+	Group                 *ImageGroup    `gorm:"foreignKey:GroupID" json:"group,omitempty"`
+	Order                 int            `gorm:"default:0" json:"order"`
+	Extracted             bool           `gorm:"default:false" json:"extracted"`
+	Distro                string         `json:"distro,omitempty"`
+	BootMethod            string         `gorm:"default:sanboot" json:"boot_method"`
+	KernelPath            string         `json:"kernel_path,omitempty"`
+	InitrdPath            string         `json:"initrd_path,omitempty"`
+	BootParams            string         `json:"boot_params,omitempty"`
+	SquashfsPath          string         `json:"squashfs_path,omitempty"`
+	ExtractionError       string         `json:"extraction_error,omitempty"`
+	ExtractedAt           *time.Time     `json:"extracted_at,omitempty"`
+	SanbootCompatible     bool           `gorm:"default:true" json:"sanboot_compatible"`
+	SanbootHint           string         `json:"sanboot_hint,omitempty"`
+	NetbootRequired       bool           `gorm:"default:false" json:"netboot_required"`
+	NetbootAvailable      bool           `gorm:"default:false" json:"netboot_available"`
+	NetbootURL            string         `json:"netboot_url,omitempty"`
+	AutoInstallScript     string         `gorm:"type:text" json:"auto_install_script,omitempty"`
+	AutoInstallEnabled    bool           `gorm:"default:false" json:"auto_install_enabled"`
+	AutoInstallScriptType string         `json:"auto_install_script_type,omitempty"`
+	InstallWimPath        string         `json:"install_wim_path,omitempty"`
+	SMBInstallEnabled     bool           `gorm:"default:false" json:"smb_install_enabled"`
+	SMBPatchFingerprint   string         `json:"smb_patch_fingerprint,omitempty"`
+	SMBNeedsRepatch       bool           `gorm:"-" json:"smb_needs_repatch"`
 
 	AutoInstallFile string `json:"auto_install_file,omitempty"`
 }
 
 type BootLog struct {
-	ID         uint       `gorm:"primarykey" json:"id"`
-	CreatedAt  time.Time  `json:"created_at"`
-	ClientID   *uint      `json:"client_id,omitempty"`
-	Client     *Client    `gorm:"foreignKey:ClientID" json:"client,omitempty"`
-	ImageID    *uint      `json:"image_id,omitempty"`
-	Image      *Image     `gorm:"foreignKey:ImageID" json:"image,omitempty"`
-	MACAddress string     `gorm:"index" json:"mac_address"`
-	ImageName  string     `json:"image_name"`
-	Success    bool       `json:"success"`
-	ErrorMsg   string     `json:"error_msg,omitempty"`
-	IPAddress  string     `json:"ip_address,omitempty"`
+	ID         uint      `gorm:"primarykey" json:"id"`
+	CreatedAt  time.Time `json:"created_at"`
+	ClientID   *uint     `json:"client_id,omitempty"`
+	Client     *Client   `gorm:"foreignKey:ClientID" json:"client,omitempty"`
+	ImageID    *uint     `json:"image_id,omitempty"`
+	Image      *Image    `gorm:"foreignKey:ImageID" json:"image,omitempty"`
+	MACAddress string    `gorm:"index" json:"mac_address"`
+	ImageName  string    `json:"image_name"`
+	Success    bool      `json:"success"`
+	ErrorMsg   string    `json:"error_msg,omitempty"`
+	IPAddress  string    `json:"ip_address,omitempty"`
 }
 
 type HardwareInventory struct {
@@ -269,22 +269,22 @@ type DriverPack struct {
 }
 
 type DistroProfile struct {
-	ID                    uint      `gorm:"primarykey" json:"id"`
-	CreatedAt             time.Time `json:"created_at"`
-	UpdatedAt             time.Time `json:"updated_at"`
-	ProfileID             string    `gorm:"uniqueIndex;not null" json:"profile_id"`
-	DisplayName           string    `json:"display_name"`
-	Family                string    `json:"family"`
-	FilenamePatterns      StringSlice `gorm:"type:text" json:"filename_patterns"`
-	KernelPaths           StringSlice `gorm:"type:text" json:"kernel_paths"`
-	InitrdPaths           StringSlice `gorm:"type:text" json:"initrd_paths"`
-	SquashfsPaths         StringSlice `gorm:"type:text" json:"squashfs_paths"`
-	DefaultBootParams     string    `json:"default_boot_params"`
-	BootParamsWithSquashfs string   `json:"boot_params_with_squashfs,omitempty"`
-	AutoInstallType       string    `json:"auto_install_type,omitempty"`
-	BootMethod            string    `json:"boot_method,omitempty"`
-	Custom                bool      `gorm:"default:false" json:"custom"`
-	Version               string    `json:"version,omitempty"`
+	ID                     uint        `gorm:"primarykey" json:"id"`
+	CreatedAt              time.Time   `json:"created_at"`
+	UpdatedAt              time.Time   `json:"updated_at"`
+	ProfileID              string      `gorm:"uniqueIndex;not null" json:"profile_id"`
+	DisplayName            string      `json:"display_name"`
+	Family                 string      `json:"family"`
+	FilenamePatterns       StringSlice `gorm:"type:text" json:"filename_patterns"`
+	KernelPaths            StringSlice `gorm:"type:text" json:"kernel_paths"`
+	InitrdPaths            StringSlice `gorm:"type:text" json:"initrd_paths"`
+	SquashfsPaths          StringSlice `gorm:"type:text" json:"squashfs_paths"`
+	DefaultBootParams      string      `json:"default_boot_params"`
+	BootParamsWithSquashfs string      `json:"boot_params_with_squashfs,omitempty"`
+	AutoInstallType        string      `json:"auto_install_type,omitempty"`
+	BootMethod             string      `json:"boot_method,omitempty"`
+	Custom                 bool        `gorm:"default:false" json:"custom"`
+	Version                string      `json:"version,omitempty"`
 }
 
 type MenuTheme struct {
@@ -293,7 +293,7 @@ type MenuTheme struct {
 	UpdatedAt time.Time `json:"updated_at"`
 
 	Title           string `gorm:"default:Bootimus - Boot Menu" json:"title"`
-	MenuTimeout     int    `gorm:"default:30" json:"menu_timeout"`    // seconds, 0 = no timeout (wait forever)
+	MenuTimeout     int    `gorm:"default:30" json:"menu_timeout"` // seconds, 0 = no timeout (wait forever)
 	DefaultMenuItem string `gorm:"default:local" json:"default_menu_item"`
 }
 
@@ -302,20 +302,20 @@ type BootTool struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 
-	Name        string `gorm:"uniqueIndex;not null" json:"name"`        // e.g. "gparted"
-	DisplayName string `json:"display_name"`                            // e.g. "GParted Live"
-	Description string `json:"description"`                             // short description
-	Version     string `json:"version"`                                 // e.g. "1.8.1-2"
-	Enabled     bool   `gorm:"default:false" json:"enabled"`            // show in boot menu
-	Downloaded  bool   `gorm:"default:false" json:"downloaded"`         // files are on disk
-	Order       int    `gorm:"default:0" json:"order"`                  // menu order
-	DownloadURL string `json:"download_url"`                            // user-overridable URL
-	Custom      bool   `gorm:"default:false" json:"custom"`             // user-created tool
-	KernelPath  string `json:"kernel_path,omitempty"`                   // path within tool dir
-	InitrdPath  string `json:"initrd_path,omitempty"`                   // path within tool dir
-	BootParams  string `json:"boot_params,omitempty"`                   // kernel parameters ({{HTTP_URL}} replaced)
-	BootMethod  string `json:"boot_method,omitempty"`                   // "kernel", "memdisk", or "chain"
-	ArchiveType string `json:"archive_type,omitempty"`                  // "zip", "bin", or "iso"
-	DownloadURLBIOS string `json:"download_url_bios,omitempty"`         // optional BIOS variant URL (chain tools)
-	KernelPathBIOS  string `json:"kernel_path_bios,omitempty"`          // optional BIOS variant local path
+	Name            string `gorm:"uniqueIndex;not null" json:"name"` // e.g. "gparted"
+	DisplayName     string `json:"display_name"`                     // e.g. "GParted Live"
+	Description     string `json:"description"`                      // short description
+	Version         string `json:"version"`                          // e.g. "1.8.1-2"
+	Enabled         bool   `gorm:"default:false" json:"enabled"`     // show in boot menu
+	Downloaded      bool   `gorm:"default:false" json:"downloaded"`  // files are on disk
+	Order           int    `gorm:"default:0" json:"order"`           // menu order
+	DownloadURL     string `json:"download_url"`                     // user-overridable URL
+	Custom          bool   `gorm:"default:false" json:"custom"`      // user-created tool
+	KernelPath      string `json:"kernel_path,omitempty"`            // path within tool dir
+	InitrdPath      string `json:"initrd_path,omitempty"`            // path within tool dir
+	BootParams      string `json:"boot_params,omitempty"`            // kernel parameters ({{HTTP_URL}} replaced)
+	BootMethod      string `json:"boot_method,omitempty"`            // "kernel", "memdisk", or "chain"
+	ArchiveType     string `json:"archive_type,omitempty"`           // "zip", "bin", or "iso"
+	DownloadURLBIOS string `json:"download_url_bios,omitempty"`      // optional BIOS variant URL (chain tools)
+	KernelPathBIOS  string `json:"kernel_path_bios,omitempty"`       // optional BIOS variant local path
 }

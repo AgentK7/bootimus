@@ -9,7 +9,6 @@ import (
 	"golang.org/x/text/transform"
 )
 
-
 func readU8(b []byte) uint8 {
 	return b[0]
 }

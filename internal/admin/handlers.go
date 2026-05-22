@@ -1915,8 +1915,8 @@ func (h *Handler) ListBootloaders(w http.ResponseWriter, r *http.Request) {
 	h.sendJSON(w, http.StatusOK, Response{
 		Success: true,
 		Data: map[string]interface{}{
-			"sets":      sets,
-			"active":    activeSet,
+			"sets":   sets,
+			"active": activeSet,
 		},
 	})
 }
@@ -3398,7 +3398,6 @@ func (h *Handler) DeleteCustomFile(w http.ResponseWriter, r *http.Request) {
 	h.sendJSON(w, http.StatusOK, Response{Success: true, Message: "File deleted"})
 }
 
-
 func (h *Handler) ListDriverPacks(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		h.sendJSON(w, http.StatusMethodNotAllowed, Response{Success: false, Error: "Method not allowed"})
@@ -3901,7 +3900,6 @@ func (h *Handler) PowerClientGroup(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-
 func (h *Handler) ListScheduledTasks(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		h.sendJSON(w, http.StatusMethodNotAllowed, Response{Success: false, Error: "Method not allowed"})
@@ -4317,7 +4315,6 @@ func (h *Handler) ImportClientsCSV(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 }
-
 
 func (h *Handler) ListClientGroups(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {

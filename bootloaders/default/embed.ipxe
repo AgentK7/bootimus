@@ -1,11 +1,44 @@
 #!ipxe
-dhcp
+
+echo Bootimus iPXE bootloader
+echo
+
+:netup
+ifstat
+echo
+echo Attempting DHCP on net0...
+dhcp net0 || goto netfail
 
 set boot-server ${proxydhcp/next-server}
 isset ${boot-server} || set boot-server ${proxydhcp/66:string}
 isset ${boot-server} || set boot-server ${66:string}
 isset ${boot-server} || set boot-server ${next-server}
 
-chain tftp://${boot-server}/autoexec.ipxe ||
-chain tftp://${next-server}/autoexec.ipxe ||
+isset ${boot-server} || goto manual
+echo Bootimus server: ${boot-server}
+chain http://${boot-server}/menu.ipxe?mac=${net0/mac} || chain tftp://${boot-server}/autoexec.ipxe || goto manual
+
+:netfail
+echo
+echo === Network setup failed ===
+echo No NIC driver, no link, or DHCP timed out.
+echo Wi-Fi is not supported by iPXE. Try wired or USB Ethernet.
+echo
+goto pause_then_manual
+
+:manual
+echo
+echo === Bootimus server not auto-discovered ===
+echo
+echo Enter server (IP or host[:port]), blank for iPXE shell:
+read --timeout 0 server
+isset ${server} || goto fallback_shell
+chain http://${server}/menu.ipxe?mac=${net0/mac} || chain http://${server}:8080/menu.ipxe?mac=${net0/mac} || goto manual
+
+:pause_then_manual
+prompt --timeout 5000 Press any key to enter manual mode...
+goto manual
+
+:fallback_shell
 shell
+goto manual

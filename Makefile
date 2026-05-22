@@ -1,4 +1,4 @@
-.PHONY: help build run clean docker-build docker-up docker-down docker-push release binaries bootloaders sync-profiles appliance appliance-amd64 appliance-arm64 test-appliance build-website push-website
+.PHONY: help build run clean docker-build docker-up docker-down docker-push release binaries bootloaders sync-profiles bump appliance appliance-amd64 appliance-arm64 test-appliance build-website push-website
 
 VERSION     ?= $(shell cat VERSION)
 DOCKER_USER ?= garybowers
@@ -40,13 +40,16 @@ help:
 	@echo "  make test-appliance   - Boot the amd64 image in QEMU (UI: http://localhost:18081)"
 	@echo ""
 	@echo "Publish:"
-	@echo "  make binaries         - Build multi-arch binaries via docker buildx"
+	@echo "  make binaries         - Build linux + windows binaries (amd64, arm64)"
 	@echo "  make release          - Build binaries and show upload instructions"
 	@echo "  make docker-push      - Build and push multi-arch images to Docker Hub"
 	@echo ""
 	@echo "Website (marketing site -> Google Artifact Registry):"
 	@echo "  make build-website    - Build amd64 image from repo root into GCP AR"
 	@echo "  make push-website     - Build + push to $(GCP_REGION)-docker.pkg.dev"
+	@echo ""
+	@echo "Versioning:"
+	@echo "  make bump NEW_VERSION=X.Y.Z  - Bump VERSION + sync into both *-profiles.json"
 	@echo ""
 	@echo "Override version:  VERSION=1.0.0 make build"
 
@@ -84,15 +87,23 @@ test-appliance:
 ## Local (binary) -------------------------------------------------------------
 
 sync-profiles:
+	@sed -i 's/"version": "[^"]*"/"version": "$(VERSION)"/' distro-profiles.json
+	@sed -i 's/"version": "[^"]*"/"version": "$(VERSION)"/' tools-profiles.json
 	@cp distro-profiles.json internal/profiles/distro-profiles.json
 	@cp tools-profiles.json internal/tools/tools-profiles.json
 
+bump:
+	@test -n "$(NEW_VERSION)" || (echo "Usage: make bump NEW_VERSION=X.Y.Z" && exit 1)
+	@echo "$(NEW_VERSION)" > VERSION
+	@$(MAKE) --no-print-directory sync-profiles VERSION=$(NEW_VERSION)
+	@echo "Bumped to $(NEW_VERSION) — VERSION + both *-profiles.json (root + internal copies)"
+
 build: sync-profiles
 	@echo "Building bootimus $(VERSION)..."
-	CGO_ENABLED=1 go build -ldflags="$(LDFLAGS)" -o $(BINARY) .
+	CGO_ENABLED=0 go build -ldflags="$(LDFLAGS)" -o $(BINARY) .
 
 run: sync-profiles
-	CGO_ENABLED=1 go run -ldflags="$(LDFLAGS)" . serve
+	CGO_ENABLED=0 go run -ldflags="$(LDFLAGS)" . serve
 
 clean:
 	rm -f bootimus bootimus-*
@@ -116,25 +127,24 @@ PLATFORMS ?= linux/amd64,linux/arm64
 release: sync-profiles clean binaries docker-push
 	@echo ""
 	@echo "Release v$(VERSION) artefacts built:"
-	@ls -lh bootimus-* appliance/build/bootimus-appliance-$(VERSION)-*.img 2>/dev/null
+	@ls -lh bootimus-* appliance/build/bootimus-appliance-$(VERSION)-*.img 2>/dev/null || true
 	@echo ""
 	@echo "Upload these to GitHub: Repo -> Releases -> Draft a new release -> Tag: v$(VERSION)"
 
-binaries:
-	@echo "Building binaries v$(VERSION) via docker buildx..."
-	docker buildx create --use --name bootimus-builder --driver docker-container 2>/dev/null || docker buildx use bootimus-builder
-	docker buildx build \
-		--platform $(PLATFORMS) \
-		--target binaries \
-		--build-arg VERSION=$(VERSION) \
-		--output type=local,dest=./dist .
-	@# Flatten platform directories into release binaries
-	@for dir in dist/*/; do \
-		for f in "$$dir"bootimus-*; do \
-			cp "$$f" "./"; \
-		done; \
+BINARY_TARGETS ?= linux/amd64 linux/arm64 windows/amd64 windows/arm64
+
+binaries: sync-profiles
+	@echo "Building binaries v$(VERSION)..."
+	@for target in $(BINARY_TARGETS); do \
+		os=$${target%/*}; arch=$${target#*/}; \
+		out=bootimus-$$os-$$arch; \
+		if [ "$$os" = "windows" ]; then out=$$out.exe; fi; \
+		printf '  %-20s -> %s\n' "$$os/$$arch" "$$out"; \
+		CGO_ENABLED=0 GOOS=$$os GOARCH=$$arch \
+			go build -trimpath -ldflags="$(LDFLAGS)" -o "$$out" . || exit 1; \
 	done
-	@rm -rf dist
+	@echo "Done."
+	@ls -lh bootimus-*
 
 docker-push:
 	docker buildx create --use --name bootimus-builder --driver docker-container 2>/dev/null || docker buildx use bootimus-builder

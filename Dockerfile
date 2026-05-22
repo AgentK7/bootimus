@@ -15,7 +15,7 @@ COPY main.go .
 ARG VERSION=dev
 ARG TARGETOS=linux
 ARG TARGETARCH
-RUN CGO_ENABLED=1 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build \
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build \
     -a -ldflags="-w -s -X bootimus/internal/server.Version=${VERSION}" \
     -o /out/bootimus-${TARGETOS}-${TARGETARCH} .
 

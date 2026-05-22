@@ -658,6 +658,170 @@ const TRANSLATIONS = {
 
         'lang.label': 'Язык',
     },
+
+    'zh-CN': {
+        'app.title': 'Bootimus 管理面板',
+        'app.subtitle': 'PXE/HTTP 引导服务器管理界面',
+        'app.product_subtitle': 'PXE/HTTP 引导服务器',
+
+        'nav.group.overview': '概览',
+        'nav.group.management': '管理',
+        'nav.group.boot': '引导',
+        'nav.group.access': '访问',
+        'nav.group.system': '系统',
+
+        'nav.server': '服务器信息',
+        'nav.images': '镜像',
+        'nav.public_files': '公共文件',
+        'nav.autoinstall': '自动安装',
+        'nav.bootloaders': '引导加载器',
+        'nav.tools': '工具',
+        'nav.profiles': '发行版配置',
+        'nav.clients': '客户端',
+        'nav.users': '用户',
+        'nav.settings': '设置',
+        'nav.logs': '日志',
+
+        'common.cancel': '取消',
+        'common.save': '保存',
+        'common.delete': '删除',
+        'common.close': '关闭',
+        'common.upload': '上传',
+        'common.refresh': '刷新',
+        'common.refresh_tooltip': '重新加载',
+        'common.enabled': '已启用',
+        'common.loading': '加载中…',
+
+        'login.auth_method': '认证方式',
+        'login.username': '用户名',
+        'login.password': '密码',
+        'login.signin': '登录',
+
+        'about.website': '官网',
+        'about.github': 'GitHub',
+        'about.report_issues': '反馈问题',
+        'about.docker_hub': 'Docker Hub',
+        'about.licence': '许可',
+
+        'user.logout': '退出',
+        'user.role.user': '用户',
+        'user.role.admin': '管理员',
+
+        'ui.toggle_dark_mode': '切换深色模式',
+
+        'server.info.title': '服务器信息',
+        'server.info.loading': '正在加载服务器信息…',
+        'sessions.title': '活动会话',
+
+        'server.section.running_status': '运行状态',
+        'server.section.system_resources': '系统资源',
+        'server.section.configuration': '配置',
+        'server.section.environment': '环境变量',
+
+        'server.field.version': '版本',
+        'server.field.uptime': '运行时间',
+        'server.field.runtime_mode': '运行模式',
+        'server.field.os': '操作系统',
+        'server.field.arch': '架构',
+
+        'server.metric.cpu': 'CPU 使用率',
+        'server.metric.memory': '内存',
+        'server.metric.disk': '磁盘',
+        'server.metric.cores_available': '可用 {{n}} 核',
+        'server.metric.memory_detail': '已用 {{used}} / 共 {{total}}',
+        'server.metric.disk_detail': '可用 {{free}} / 共 {{total}}',
+
+        'server.env.empty': '未设置任何环境变量',
+
+        'server.config.boot_directory': '引导目录',
+        'server.config.data_directory': '数据目录',
+        'server.config.database_mode': '数据库模式',
+        'server.config.http_port': 'HTTP 端口',
+        'server.config.iso_directory': 'ISO 目录',
+        'server.config.ldap_enabled': '已启用 LDAP',
+        'server.config.proxy_dhcp': 'Proxy DHCP',
+        'server.config.windows_smb': 'Windows SMB',
+        'server.config.windows_smb_patcher': 'Windows SMB 补丁工具',
+
+        'stats.total_clients': '客户端总数',
+        'stats.active_clients': '活动客户端',
+        'stats.total_images': '镜像总数',
+        'stats.enabled_images': '已启用镜像',
+        'stats.total_boots': '引导总次数',
+
+        'page.clients.title': '客户端管理',
+        'page.clients.intro': '管理 PXE 引导客户端。连接后会自动出现已发现的客户端。',
+        'page.client_groups.title': '客户端分组',
+        'page.client_groups.intro': '按位置、角色或机群对客户端分组。可批量唤醒所有成员、为所有成员设置下次引导镜像并叠加分配的镜像。',
+        'page.images.title': '镜像管理',
+        'page.images.intro': '上传、下载和管理可用于 PXE 引导的操作系统镜像。',
+        'page.public_files.title': '公共文件',
+        'page.public_files.intro': '对所有客户端可见的文件。镜像专属文件请在「镜像」标签中管理。',
+        'page.users.title': '用户管理',
+        'page.users.intro': '管理管理面板的用户账户与权限。',
+        'page.tools.title': '引导工具',
+        'page.tools.intro': '下载工具以使其可用,然后启用以将其显示在引导菜单中。',
+        'page.profiles.title': '发行版配置',
+        'page.profiles.intro': '发行版配置定义如何识别和引导 ISO。内置配置会从中央仓库更新。用户自定义配置优先。',
+        'page.autoinstall.title': '自动安装文件',
+        'page.autoinstall.intro': '无需人工干预即可安装操作系统。Windows 使用 autounattend.xml;Ubuntu 使用 cloud-init;Red Hat 系使用 kickstart;Debian 使用 preseed。将文件附加到镜像作为默认配置,或针对特定客户端覆盖该配置。',
+        'page.bootloaders.title': '引导加载器管理',
+        'page.bootloaders.intro': '管理发送给 PXE 客户端的 iPXE 引导加载器集合。可创建带有自定义引导文件的自定义集合。',
+        'page.logs.title': '服务器日志',
+        'page.logs.intro': 'TFTP、HTTP 与 PXE 引导的实时服务器日志输出。',
+
+        'props.modal.title': '镜像属性',
+        'props.tab.properties': '属性',
+        'props.tab.autoinstall': '自动安装',
+        'props.tab.files': '文件',
+
+        'props.field.display_name': '显示名称',
+        'props.field.description': '描述',
+        'props.field.group': '所属分组',
+        'props.field.group_unassigned': '未分配',
+        'props.field.order': '顺序',
+        'props.field.boot_method': '引导方式',
+        'props.field.distro': '发行版配置',
+        'props.field.distro_auto': '自动检测',
+        'props.field.boot_params': '引导参数',
+        'props.field.boot_params_placeholder': '额外的内核参数',
+        'props.field.boot_params_hint': '留空以使用发行版默认值。',
+        'props.field.placeholders_label': '占位符:',
+        'props.field.public': '公开(所有客户端可见)',
+        'props.field.default_autoinstall': '默认自动安装文件',
+        'props.field.autoinstall_none': '(无 — 手动安装)',
+        'props.field.autoinstall_hint': '仅显示与该镜像发行版匹配的文件。文件请在「自动安装」中管理。',
+
+        'props.boot_method.sanboot': 'SAN 引导',
+        'props.boot_method.kernel': '内核 / Initrd',
+        'props.boot_method.nbd': 'NBD 挂载',
+
+        'props.action.extract': '解包',
+        'props.action.re_extract': '重新解包',
+        'props.action.extracting': '正在解包…',
+        'props.action.extract_now': '立即解包',
+        'props.action.patch_smb': '为 SMB 打补丁',
+        'props.action.re_patch_smb': '重新为 SMB 打补丁',
+        'props.action.patching': '正在打补丁…',
+        'props.action.save_and_repatch': '保存并重新打补丁',
+        'props.action.redetect': '重新检测',
+        'props.action.download_iso': '下载 ISO',
+        'props.action.download_netboot': '下载 netboot 文件',
+        'props.action.download_netboot_tooltip': '从发行版镜像源下载用于 netboot 的内核 / initrd 套件',
+        'props.action.open_settings': '打开设置',
+        'props.action.save_properties': '保存属性',
+
+        'props.notify.patch_success': 'boot.wim 已针对 SMB 自动安装完成补丁',
+        'props.notify.patch_failed': '补丁应用失败',
+
+        'props.warn.not_extracted': '此镜像尚未解包。未解包时该系统大多无法可靠引导 — 需要直接提供内核和 initrd。',
+        'props.warn.netboot_required': '需要 netboot 文件。该 Debian/Ubuntu DVD ISO 含有安装程序,需要从发行版镜像源获取独立的内核 / initrd 套件 — 无法直接从 ISO 内容引导。',
+        'props.warn.smb_disabled': '服务器 SMB 已禁用。安装 Windows 时必须启用。请在设置中开启 Windows SMB。',
+        'props.warn.wimlib_missing': '服务器上未安装 wimlib-imagex。缺少它则无法为 boot.wim 打补丁。请在运行 bootimus 的主机上安装 wimtools(或 wimlib-imagex)后重启。',
+        'props.warn.repatch': '需要重新打补丁。自上次将参数嵌入 boot.wim 以来,自动安装设置已更改 — 请保存并重新为 SMB 打补丁以使更改生效。',
+
+        'lang.label': '语言',
+    },
 };
 
 const I18N_LANGS = [
@@ -668,6 +832,7 @@ const I18N_LANGS = [
     { code: 'it',    name: 'Italiano',     flag: '🇮🇹' },
     { code: 'nl',    name: 'Nederlands',   flag: '🇳🇱' },
     { code: 'ru',    name: 'Русский',      flag: '🇷🇺' },
+    { code: 'zh-CN', name: '简体中文',     flag: '🇨🇳' },
 ];
 
 let _currentLang = 'en-GB';
@@ -677,6 +842,7 @@ function _detectInitialLang() {
     if (stored && TRANSLATIONS[stored]) return stored;
     const browserFull = (navigator.language || 'en-GB').toLowerCase();
     if (browserFull.startsWith('en')) return 'en-GB';
+    if (browserFull.startsWith('zh')) return 'zh-CN';
     const browserShort = browserFull.slice(0, 2);
     return TRANSLATIONS[browserShort] ? browserShort : 'en-GB';
 }

@@ -182,6 +182,7 @@ func runServe(cmd *cobra.Command, args []string) {
 	cfg := &server.Config{
 		TFTPPort:         viper.GetInt("tftp_port"),
 		TFTPSinglePort:   viper.GetBool("tftp_single_port"),
+		TFTPBlockSize:    viper.GetInt("tftp_block_size"),
 		HTTPPort:         viper.GetInt("http_port"),
 		AdminPort:        viper.GetInt("admin_port"),
 		BootDir:          bootloadersDir,
